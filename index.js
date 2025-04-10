@@ -12,7 +12,18 @@ const FRAMES = 10;
 const DELAY = 20;
 const RESOLUTION = 128;
 
-
+const infoText = `﹉﹉﹉﹉﹉୨♡୧﹉﹉﹉﹉﹉
+ღ┇name: Luna
+ღ┇gender: Female
+ღ┇born: <t:1178748000:R> 
+ღ┇sexuality: <:lesbian:1359250397906337915> <:sapphic:1359250399911219251>
+ღ┇songs: changes alot.. currently: [Girl of my Dreams - Guti](<https://www.youtube.com/watch?v=j80HSX6l9gM>), [DOING IT AGAIN BABY - girl in red](<https://www.youtube.com/watch?v=FrnYzWo75OY>)
+ღ┇games: Minecraft, Assetto Corsa, Fh4, Fh5, Muse Dash, ...
+⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣
+╰─ ୨୧ interests & more!
+ღ┇likes: cars & bikes, skating, programming, gaming, music, reading (yuri especially), streaming, video essays, video editing (I have too many hobbies I know)
+ღ┇location: Germany 🥨 🍺 
+⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣`;
 
 
 // Pfade zu den petpet-Frames (müssen im Projektverzeichnis liegen)
@@ -64,28 +75,37 @@ async function generatePetPetGIF(avatarUrl) {
 }
 
 client.on('ready', () => {
-    console.log(`${client.user.username} ist bereit!`);
+    console.log(`${client.user.username} verstößt nun gegen die Terms of Service von Discord!`);
 });
 
+let lastActivityTimestamp = Date.now();
+
+function updateStatusIfNeeded() {
+    const now = Date.now();
+    const diff = now - lastActivityTimestamp;
+
+    if (diff >= 5 * 60 * 1000 && client.user.presence.status !== 'idle') {
+        client.user.setPresence({ status: 'idle' });
+        console.log('Status auf "abwesend" gesetzt wegen Inaktivität.');
+    }
+}
+
+// Alle 10 Sekunden prüfen, ob 5 Minuten Inaktivität vergangen sind
+setInterval(updateStatusIfNeeded, 10 * 1000);
+
 client.on('messageCreate', async message => {
-    if (message.author.id === client.user.id) return;
+    if (message.author.id === client.user.id){
+        lastActivityTimestamp = Date.now();
+        if (client.user.presence.status !== 'dnd') {
+            client.user.setPresence({ status: 'dnd' });
+            console.log('Status auf "dnd" gesetzt wegen neuer Aktivität.');
+        }
+    }
+
+    if (message.author.id === client.user.id && message.content !== '!infotest') return;
     if (message.guild) return;
 
-
-    if (message.content === '!info') {
-        const infoText = `﹉﹉﹉﹉﹉୨♡୧﹉﹉﹉﹉﹉
-ღ┇name: Luna
-ღ┇gender: Female
-ღ┇born: <t:1178748000:R> 
-ღ┇sexuality: <:lesbian:1359250397906337915> <:sapphic:1359250399911219251>
-ღ┇songs: changes alot.. currently: [Girl of my Dreams - Guti](<https://www.youtube.com/watch?v=j80HSX6l9gM>), [DOING IT AGAIN BABY - girl in red](<https://www.youtube.com/watch?v=FrnYzWo75OY>)
-ღ┇games: Minecraft, Assetto Corsa, Fh4, Fh5, Muse Dash, ...
-⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣
-╰─ ୨୧ interests & more!
-ღ┇likes: cars & bikes, skating, programming, gaming, music, reading (yuri especially), streaming, video essays, video editing (I have too many hobbies I know)
-ღ┇location: Germany 🥨 🍺 
-⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣`;
-
+    if (message.content === '!info' || message.content === '!infotest') {
         await message.channel.send(infoText);
 
         try {
@@ -104,6 +124,7 @@ client.on('messageCreate', async message => {
         }
     }
 });
+
 
 // Properties parsen
 const config = {};
