@@ -103,9 +103,9 @@ client.on('messageCreate', async message => {
     }
 
     if (message.author.id === client.user.id && message.content !== '!infotest') return;
-    if (message.guild) return;
+    if (message.guild && message.content !== '!infotest') return;
 
-    if (message.content === '!info' || message.content === '!infotest') {
+    if (message.content === '!info' || message.content === '!infotest' && message.author.id === client.user.id) {
         await message.channel.send(infoText);
 
         try {
