@@ -195,8 +195,8 @@ Message: ${prompt}`
 
     if (message.author.id === client.user.id){
         lastActivityTimestamp = Date.now();
-        if (client.user.presence.status !== 'dnd') {
-            client.user.setPresence({ status: 'dnd' });
+        if (client.user.presence.status !== 'online') {
+            client.user.setPresence({ status: 'online' });
             console.log('Status auf "dnd" gesetzt wegen neuer Aktivität.');
         }
     }
